@@ -10,6 +10,7 @@ import repository.dao.UserDao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UserService {
   private final UserDao userDao;
@@ -38,8 +39,9 @@ public class UserService {
     
     for (User user: UserFile){
       try{
-        if(userDao.findByUsername(user.getUsername()).isPresent()){
-          userList.add(user);
+        Optional<User> userFromDao = userDao.findByUsername(user.getUsername());
+        if(userFromDao.isPresent()){
+          userList.add(userFromDao.get());
         }
       }
       catch(DataAccessException e){}
