@@ -8,6 +8,7 @@ import exception.UserNotFoundException;
 import repository.dao.FileUserDao;
 import repository.dao.UserDao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserService {
@@ -31,8 +32,20 @@ public class UserService {
   }
 
   // Ejercicio 9
-  public List<User> getUsersPresentInFileAndDao(FileUserDao fileUserDao, UserDao userDao)
-      throws DataAccessException {
-    throw new UnsupportedOperationException("Ejercicio 9: implement getUsersPresentInFileAndDao");
+  public List<User> getUsersPresentInFileAndDao(FileUserDao fileUserDao, UserDao userDao) throws DataAccessException {
+    List<User> UserFile = fileUserDao.findAll();
+    ArrayList<User> userList = new ArrayList<>(); 
+    
+    for (User user: UserFile){
+      try{
+        if(userDao.findByUsername(user.getUsername()).isPresent()){
+          userList.add(user);
+        }
+      }
+      catch(DataAccessException e){}
+    }
+
+    return userList;
+        //throw new UnsupportedOperationException("Ejercicio 9: implement getUsersPresentInFileAndDao");
   }
 }
