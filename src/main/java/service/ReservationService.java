@@ -103,11 +103,12 @@ public class ReservationService {
 
     // Recorre la lista para ver si existe una reserva igual
     for (Reservation r : existing) {
-      if (r.getUser().getId().equals(newReservation.getUser().getId()) &&
+      if (r.getOwner().getId().equals(newReservation.getOwner().getId()) &&
           r.getService().getId().equals(newReservation.getService().getId())) {
 
         // si coincide salta directamente aca
-        throw new DuplicateReservationException("La reserva ya existe para este usuario y servicio.", null);
+        throw new DuplicateReservationException(newReservation.getOwner().getId(), newReservation.getService().getId());
+
       }
     }
 
