@@ -36,23 +36,20 @@ public class ReservationService {
   public ReservationResponse createReservation(CreateReservationRequest request)
       throws DataAccessException, UserNotFoundException, FlightNotFoundException {
     // 1. Resolver entidades de dominio desde los datos del DTO
-    User user =
-        userDao
-            .findByUsername(request.username())
-            .orElseThrow(() -> new UserNotFoundException(request.username()));
-    TouristService service =
-        flightDao
-            .findByNumber(request.flightNumber())
-            .orElseThrow(() -> new FlightNotFoundException(request.flightNumber()));
+    User user = userDao
+        .findByUsername(request.username())
+        .orElseThrow(() -> new UserNotFoundException(request.username()));
+    TouristService service = flightDao
+        .findByNumber(request.flightNumber())
+        .orElseThrow(() -> new FlightNotFoundException(request.flightNumber()));
 
     // 2. Construir la reserva (lógica de dominio)
-    Reservation reservation =
-        new Reservation.Builder()
-            .id((long) (Math.random() * 1000))
-            .owner(user)
-            .service(service)
-            .date(request.date())
-            .build();
+    Reservation reservation = new Reservation.Builder()
+        .id((long) (Math.random() * 1000))
+        .owner(user)
+        .service(service)
+        .date(request.date())
+        .build();
 
     reservationDao.save(reservation);
 
@@ -93,19 +90,31 @@ public class ReservationService {
       FlightDao flightDao,
       ReservationDao reservationDao)
       throws UserNotFoundException,
-          FlightNotFoundException,
-          InvalidDateRangeException,
-          DataAccessException {
+      FlightNotFoundException,
+      InvalidDateRangeException,
+      DataAccessException {
     throw new UnsupportedOperationException("Ejercicio 7: implement createReservation");
   }
 
   // Ejercicio 8
-  public Reservation addReservationIfNotDuplicate(
-      List<Reservation> existingReservations,
-      Reservation newReservation,
+  public Reservation addReservationIfNotDuplicate(List<Reservation> existing, Reservation newReservation,
       ReservationDao reservationDao)
       throws DuplicateReservationException, DataAccessException {
-    throw new UnsupportedOperationException("Ejercicio 8: implement addReservationIfNotDuplicate");
+
+    // Recorre la lista para ver si existe una reserva igual
+    for (Reservation r : existing) {
+      if (r.getUser().getId().equals(newReservation.getUser().getId()) &&
+          r.getService().getId().equals(newReservation.getService().getId())) {
+
+        // si coincide salta directamente aca
+        throw new DuplicateReservationException("La reserva ya existe para este usuario y servicio.", null);
+      }
+    }
+
+    // Persistimos si el bucle terminó sin lanzar excepciones
+    reservationDao.save(newReservation);
+
+    return newReservation;
   }
 
   // Ejercicio 10

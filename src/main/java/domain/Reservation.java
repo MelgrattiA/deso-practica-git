@@ -69,4 +69,9 @@ public class Reservation implements Identifiable {
       return reservation;
     }
   }
+
+  public Reservation getUser() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getUser'");
+  }
 }
