@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -21,6 +22,19 @@ public class Reservation implements Identifiable {
   public String getId() {
     return id.toString();
   }
+
+@Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof Reservation that)) return false;
+      return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(id);
+    }
+
 
   public static class Builder {
     private Long id;
