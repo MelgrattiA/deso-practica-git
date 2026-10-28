@@ -56,6 +56,9 @@ public class ReservationDaoFileImpl implements ReservationDao {
   public List<Reservation> findByDateRange(Instant from, Instant to) throws DataAccessException {
         List<Reservation> reservas = new ArrayList<Reservation>();
 
+        if(!(file.exists()))
+        return reservas;
+
         try(BufferedReader br = new BufferedReader(new FileReader(file)))
         {
             String linea;
@@ -65,7 +68,7 @@ public class ReservationDaoFileImpl implements ReservationDao {
 
             while((linea = br.readLine()) != null )
             {
-                campo = linea.split(",",-1);
+                campo = linea.split(",");
                 if(campo.length >=4)
                 {
                     fecha = Instant.parse(campo[3]);
@@ -76,7 +79,7 @@ public class ReservationDaoFileImpl implements ReservationDao {
                             .id(Long.parseLong(campo[0]))
                             .date(fecha)
                             .build();
-                        reservas.add(reserva);
+                            reservas.add(reserva);
                     }
                 }
               }
