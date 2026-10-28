@@ -3,11 +3,14 @@ package repository.dao;
 import domain.Reservation;
 import exception.DataAccessException;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReservationDaoFileImpl implements ReservationDao {
@@ -51,6 +54,42 @@ public class ReservationDaoFileImpl implements ReservationDao {
   // Ejercicio 3 (Parte A)
   @Override
   public List<Reservation> findByDateRange(Instant from, Instant to) throws DataAccessException {
-    throw new UnsupportedOperationException("Ejercicio 3: implement findByDateRange");
-  }
+        List<Reservation> reservas = new ArrayList<Reservation>();
+
+        if(!(file.exists()))
+        return reservas;
+
+        try(BufferedReader br = new BufferedReader(new FileReader(file)))
+        {
+            String linea;
+            String[] campo;
+            Instant fecha;
+            Reservation reserva;
+
+            while((linea = br.readLine()) != null )
+            {
+                campo = linea.split(",");
+                if(campo.length >=4)
+                {
+                    fecha = Instant.parse(campo[3]);
+
+                    if( ( fecha.equals(from) ) || ( fecha.equals(to) ) || ( fecha.isBefore(to) && fecha.isAfter(from) ) )
+                    {
+                        reserva = new Reservation();
+                        reserva.setId(Long.parseLong(campo[0]));
+                        reserva.setDate(fecha);
+                        reservas.add(reserva);
+                    }
+                }
+              }
+
+          }
+          catch (IOException e)
+          {
+                  throw new DataAccessException("Error al intentar leer las reservar", e);
+          }
+
+          return reservas;
+      }
+
 }
