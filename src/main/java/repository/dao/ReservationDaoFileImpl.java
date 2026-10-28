@@ -75,11 +75,10 @@ public class ReservationDaoFileImpl implements ReservationDao {
 
                     if( ( fecha.equals(from) ) || ( fecha.equals(to) ) || ( fecha.isBefore(to) && fecha.isAfter(from) ) )
                     {
-                      reserva = new Reservation.Builder()
-                            .id(Long.parseLong(campo[0]))
-                            .date(fecha)
-                            .build();
-                            reservas.add(reserva);
+                        reserva = new Reservation();
+                        reserva.setId(Long.parseLong(campo[0]));
+                        reserva.setDate(fecha);
+                        reservas.add(reserva);
                     }
                 }
               }
